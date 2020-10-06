@@ -17,6 +17,8 @@ app.set('views', 'views')
 
 app.use(express.static('public'))
 
+app.use(express.urlencoded({extended: true}))
+
 // Register routes with prefix
 app.use('/', homeRoutes)
 app.use('/add', addRoutes)
