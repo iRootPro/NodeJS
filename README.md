@@ -110,6 +110,17 @@ delete req.body.id
 await Course.findByIdAndUpdate(id, req.body)
 ```
 
+Удаление по ID
+
+```javascript
+try {
+    await Course.deleteOne({_id: req.body.id})
+    res.redirect('/courses')
+} catch (e) {
+    console.log(e)
+}
+```
+
 ### Внимание! Error!
 
 При работе с Handlebars и mongoose может возникнуть проблема такого вида:
