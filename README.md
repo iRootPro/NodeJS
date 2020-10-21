@@ -88,3 +88,52 @@ router.post('/', async (req, res) => {
 
 Если перейти в БД в облаке в collection и выбрать необходимую, то там можно увидеть созданную сущность.
 
+#### Метода работы с базой через mongoose:
+
+Получение всех данных из базы
+
+```javascript
+const courses = await Course.find()
+```
+
+Получение данных по ID
+
+```javascript
+const course = await Course.findById(req.params.id)
+```
+
+Получение по ID и обновление. Получаем id из объекта  req, и удаляем из него поле id, так как в MongoDB поле id указывается так: _id. 
+
+```javascript
+const {id} = req.body.id
+delete req.body.id
+await Course.findByIdAndUpdate(id, req.body)
+```
+
+### Внимание! Error!
+
+При работе с Handlebars и mongoose может возникнуть проблема такого вида:
+
+> Handlebars: Access has been denied to resolve the property "price" because it is not an "own property" of its parent.
+
+Для её решения необходимо установить: ```yarn add @handlebars/allow-prototype-access```
+
+После, в точке входа (index.js/app.js, etc):
+
+```javascript
+const Handlebars = require('handlebars')
+const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')
+```
+
+И далее в движок добавить:
+
+```javascript
+app.engine('handlebars', expressHandlebars({
+    handlebars: allowInsecurePrototypeAccess(Handlebars)
+}));
+```
+
+Ссылка на решение:
+
+https://www.npmjs.com/package/@handlebars/allow-prototype-access
+
