@@ -47,8 +47,8 @@ userSchema.methods.addToCart = function (course) {
 userSchema.methods.removeFromCart = function (id) {
     let items = [...this.cart.items]
     const idx = items.findIndex(c => c.courseId.toString() === id.toString())
-   if (items[idx] === 1) {
-        items = items.filter(i => items.courseId.toString() !== id.toString())
+   if (items[idx].count === 1) {
+        items = items.filter(i => i.courseId.toString() !== id.toString())
    } else {
        items[idx].count--
    }
