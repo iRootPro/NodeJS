@@ -40,7 +40,7 @@ async function start() {
 start()
 ```
 
-### Создание моделей используя Mongoose
+### Создание моделей используя Mongoose. Работа со Schema
 
 Пример кода:
 
@@ -63,6 +63,17 @@ module.exports = model('Course', course)
 ```
 
 id создается автоматически, руками создавать данное поле не требуется.
+
+Чтобы создать значение по умолчанию, следует воспользоваться записью:
+
+```javascript
+date: {
+    type: Date,
+    default: Date.now
+}
+```
+
+**Важно**, в default не вызывать функцию!
 
 При экспорте указывается название модели - Course и схема - course.
 
@@ -166,6 +177,34 @@ try {
 ```javascript
 const courses = await Course.find().populate('userId', 'email name').select('title price img')
 ```
+
+#### Добавление метода в схему ####
+
+Например, нужно отдавать клиенту немного другой контент (с измененным параметром и тд), для этого удобно использовать собственные методы схемы.
+
+Можно писать прямо в файле с самое схемой или вынести в отдельный файл, как в примере:
+
+```javascript
+const addMethods = schema => {
+  schema.method('toResponse', function () {
+    const { _id, ...rest } = this.toJSON();
+    delete rest.password;
+    delete rest.__v;
+    return { id: _id, ...rest };
+  });
+  schema.method('fromRequest', function () {
+    console.log(this);
+  });
+};
+```
+
+Для того, чтобы "привязать" данные методы к схеме, в нужной схеме  перед экспортом нужно:
+
+```javascript
+addMethods(User);
+```
+
+После этого можно работать с методом, так: **User.toClient()**
 
 ### Внимание! Error!
 
